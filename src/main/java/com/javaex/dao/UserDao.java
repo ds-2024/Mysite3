@@ -89,7 +89,53 @@ public class UserDao {
 			return count;
 		}
 
-	}
 	
+	
+	public UserVo selectUserByIdPw(UserVo userVo) {
+		UserVo authUser = null; //authUser 만들어주기
+		
+		this.getConnection();
+		
+		try {
+			// 3. SQL문 준비 / 바인딩 / 실행
+			// SQL문 준비
+			String query = "";
+			query += " select   no,  ";
+			query += " 			name ";
+			query += " from users ";
+			query += " where id= ? ";
+			query += " and password=? ";
+
+			// 바인딩
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, userVo.getId());
+			pstmt.setString(2, userVo.getPw());
+			
+
+			// 실행
+			rs = pstmt.executeQuery(); //select문이라 rs로 오고 Query 로 물어봐야함
+
+			// 4.결과처리
+			
+			while(rs.next()) {
+				int no = rs.getInt("no");
+				String name = rs.getString("name");
+				authUser= new UserVo();
+				authUser.setNo(no);
+				authUser.setName(name);
+			}
+			
+			
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} 
+		
+		this.close();
+		
+		return authUser;
+
+	 }
 	
 
+}
